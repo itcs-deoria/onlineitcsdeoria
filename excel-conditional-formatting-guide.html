@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Excel Conditional Formatting — 3 Projects | IT Computer Studies</title>
+<style>
+  :root{
+    --grid:#d7dde3;
+    --ink:#1c2b24;
+    --paper:#fbfaf6;
+    --cell:#ffffff;
+    --excel-green:#1e7145;
+    --excel-green-dark:#12452b;
+    --accent-gold:#c98a2c;
+    --fail-red:#b3372a;
+    --pass-green:#2f7d4f;
+    --pending-yellow:#caa019;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Segoe UI", -apple-system, "Noto Sans Devanagari", sans-serif;
+    line-height:1.55;
+  }
+  /* subtle spreadsheet grid backdrop on the header only */
+  header{
+    background:
+      linear-gradient(var(--excel-green-dark), var(--excel-green-dark)),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 34px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 84px);
+    color:#fff;
+    padding:52px 24px 40px;
+    text-align:left;
+  }
+  .header-inner{max-width:880px;margin:0 auto;}
+  .kicker{
+    font-size:14px;
+    color:#bfe3cd;
+    margin:0 0 10px;
+  }
+  h1{
+    font-size:clamp(28px,4vw,42px);
+    margin:0 0 12px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  header p{
+    max-width:640px;
+    color:#e4f1e9;
+    font-size:16px;
+    margin:0;
+  }
+  main{max-width:880px;margin:0 auto;padding:36px 24px 80px;}
+
+  .intro-box{
+    background:var(--cell);
+    border:1px solid var(--grid);
+    border-left:5px solid var(--excel-green);
+    border-radius:4px;
+    padding:20px 22px;
+    margin-bottom:44px;
+    font-size:15.5px;
+  }
+  .intro-box b{color:var(--excel-green-dark);}
+
+  section.project{
+    margin-bottom:56px;
+    border:1px solid var(--grid);
+    border-radius:6px;
+    overflow:hidden;
+    background:var(--cell);
+  }
+  .project-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    padding:22px 26px;
+    border-bottom:1px solid var(--grid);
+    background:#f2f6f3;
+  }
+  .project-num{
+    font-size:13px;
+    font-weight:700;
+    color:#fff;
+    background:var(--excel-green);
+    padding:4px 10px;
+    border-radius:3px;
+    letter-spacing:0.02em;
+  }
+  .project-head h2{
+    margin:0;
+    font-size:21px;
+    color:var(--excel-green-dark);
+  }
+  .project-body{padding:24px 26px 28px;}
+  .goal{
+    font-size:14.5px;
+    color:#41544a;
+    margin:0 0 20px;
+    padding-bottom:16px;
+    border-bottom:1px dashed var(--grid);
+  }
+
+  h3.sub{
+    font-size:15px;
+    text-transform:none;
+    color:var(--excel-green-dark);
+    margin:0 0 10px;
+    font-weight:700;
+  }
+
+  table.sample{
+    border-collapse:collapse;
+    width:100%;
+    margin:0 0 24px;
+    font-size:14px;
+  }
+  table.sample th{
+    background:var(--excel-green-dark);
+    color:#fff;
+    text-align:left;
+    padding:8px 10px;
+    font-weight:600;
+  }
+  table.sample td{
+    border:1px solid var(--grid);
+    padding:7px 10px;
+  }
+  table.sample tr:nth-child(even) td{background:#f7f9f7;}
+  td.hl-fail{background:#fbdcd6 !important;color:var(--fail-red);font-weight:600;}
+  td.hl-pass{background:#d8efe0 !important;color:var(--pass-green);font-weight:600;}
+  td.hl-pending{background:#faedc9 !important;color:#7a5b0c;font-weight:600;}
+  td.hl-overdue{background:#fbdcd6 !important;color:var(--fail-red);font-weight:700;}
+
+  ol.steps{
+    margin:0 0 22px;
+    padding-left:0;
+    list-style:none;
+    counter-reset:step;
+  }
+  ol.steps li{
+    counter-increment:step;
+    position:relative;
+    padding:10px 0 10px 40px;
+    border-bottom:1px solid #eef1ee;
+    font-size:15px;
+  }
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{
+    content:counter(step);
+    position:absolute;
+    left:0;
+    top:9px;
+    width:24px;
+    height:24px;
+    background:var(--excel-green);
+    color:#fff;
+    border-radius:50%;
+    font-size:12.5px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  ol.steps code, p code, li code{
+    background:#eef3ee;
+    border:1px solid var(--grid);
+    padding:1px 6px;
+    border-radius:3px;
+    font-size:13.5px;
+    color:var(--excel-green-dark);
+    font-family:"Consolas","Courier New",monospace;
+  }
+  .path{
+    display:inline-block;
+    background:#eef3ee;
+    border:1px solid var(--grid);
+    border-radius:3px;
+    padding:2px 8px;
+    font-size:13.5px;
+    color:var(--excel-green-dark);
+    font-family:"Consolas","Courier New",monospace;
+  }
+
+  .tip{
+    background:#fdf6e6;
+    border:1px solid #efdcac;
+    border-left:5px solid var(--accent-gold);
+    border-radius:4px;
+    padding:14px 18px;
+    font-size:14.5px;
+    margin-top:6px;
+  }
+  .tip b{color:#8a611a;}
+
+  .result-preview{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin:6px 0 22px;
+  }
+  .swatch{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13.5px;
+    padding:6px 12px;
+    border:1px solid var(--grid);
+    border-radius:4px;
+    background:#fafcfa;
+  }
+  .dot{width:12px;height:12px;border-radius:2px;display:inline-block;}
+
+  footer{
+    max-width:880px;
+    margin:0 auto;
+    padding:0 24px 60px;
+    color:#5b6b62;
+    font-size:14px;
+  }
+  footer .brand{
+    font-weight:700;
+    color:var(--excel-green-dark);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <p class="kicker">IT Computer Studies · MS Excel Practice Sheet</p>
+    <h1>Conditional Formatting — 3 Real Projects</h1>
+    <p>Excel mein rules bana kar cells ko apne aap highlight karna seekhiye — Highlight Cell Rules aur Text Contains ka use karke. Har project mein sample data, exact steps, aur final result diya gaya hai — bas dekhiye aur apne Excel mein waise hi kariye.</p>
+  </div>
+</header>
+
+<main>
+
+  <div class="intro-box">
+    <b>Conditional Formatting kya hota hai?</b><br>
+    Ye Excel ka ek feature hai jisse aap kisi cell ki value ke basis par uska color, font ya style automatically change kar sakte ho — bina manually kuch select kiye. Jaise agar marks 33 se kam hain to cell red ho jaye, ya "Absent" likha ho to cell red highlight ho jaye. Neeche 3 projects hain — ek-ek karke follow kijiye.
+  </div>
+
+  <!-- PROJECT 1 -->
+  <section class="project">
+    <div class="project-head">
+      <span class="project-num">Project 1</span>
+      <h2>Student Marks Highlighter</h2>
+    </div>
+    <div class="project-body">
+      <p class="goal">Marks ke basis par Fail aur Top Scorer students ko automatically highlight karna.</p>
+
+      <h3 class="sub">Step 1 — Ye data apni Excel sheet mein type karein</h3>
+      <table class="sample">
+        <tr><th>Name</th><th>Subject</th><th>Marks (out of 100)</th></tr>
+        <tr><td>Rahul</td><td>Maths</td><td class="hl-fail">28</td></tr>
+        <tr><td>Priya</td><td>Maths</td><td class="hl-pass">95</td></tr>
+        <tr><td>Aman</td><td>Maths</td><td>67</td></tr>
+        <tr><td>Sneha</td><td>Maths</td><td class="hl-fail">19</td></tr>
+        <tr><td>Vikas</td><td>Maths</td><td class="hl-pass">91</td></tr>
+      </table>
+
+      <h3 class="sub">Step 2 — Rules apply karne ke steps</h3>
+      <ol class="steps">
+        <li>Column C ki saari Marks cells select karein (jaise <code>C2:C6</code>).</li>
+        <li>Top par jaayein: <span class="path">Home tab → Conditional Formatting → Highlight Cells Rules → Less Than</span></li>
+        <li>Value box mein <code>33</code> likhein, aur format dropdown se <b>"Light Red Fill with Dark Red Text"</b> choose karein → OK.</li>
+        <li>Marks cells dobara select karein, fir se: <span class="path">Home → Conditional Formatting → Highlight Cells Rules → Greater Than</span></li>
+        <li>Value box mein <code>90</code> likhein, format dropdown se <b>"Green Fill with Dark Green Text"</b> choose karein → OK.</li>
+      </ol>
+
+      <div class="result-preview">
+        <span class="swatch"><span class="dot" style="background:#fbdcd6;border:1px solid #e6a89b;"></span> Marks &lt; 33 → Fail (Red)</span>
+        <span class="swatch"><span class="dot" style="background:#d8efe0;border:1px solid #9ecdae;"></span> Marks &gt; 90 → Top Scorer (Green)</span>
+      </div>
+
+      <div class="tip"><b>Note:</b> Dono rules alag-alag apply hote hain, isliye ek cell sirf ek hi condition follow karegi jo usko match karti ho.</div>
+    </div>
+  </section>
+
+  <!-- PROJECT 2 -->
+  <section class="project">
+    <div class="project-head">
+      <span class="project-num">Project 2</span>
+      <h2>Attendance Status Tracker</h2>
+    </div>
+    <div class="project-body">
+      <p class="goal">Text ke basis par Present/Absent status ko automatically color karna — Text that Contains rule use karke.</p>
+
+      <h3 class="sub">Step 1 — Ye data apni Excel sheet mein type karein</h3>
+      <table class="sample">
+        <tr><th>Student Name</th><th>Status</th></tr>
+        <tr><td>Rahul</td><td class="hl-pass">Present</td></tr>
+        <tr><td>Priya</td><td class="hl-fail">Absent</td></tr>
+        <tr><td>Aman</td><td class="hl-pass">Present</td></tr>
+        <tr><td>Sneha</td><td class="hl-fail">Absent</td></tr>
+        <tr><td>Vikas</td><td class="hl-pass">Present</td></tr>
+      </table>
+
+      <h3 class="sub">Step 2 — Rules apply karne ke steps</h3>
+      <ol class="steps">
+        <li>Column B ki saari Status cells select karein (jaise <code>B2:B6</code>).</li>
+        <li><span class="path">Home tab → Conditional Formatting → Highlight Cells Rules → Text that Contains</span></li>
+        <li>Box mein <code>Present</code> type karein, format se <b>"Green Fill with Dark Green Text"</b> select karein → OK.</li>
+        <li>Status cells dobara select karein, fir se: <span class="path">Home → Conditional Formatting → Highlight Cells Rules → Text that Contains</span></li>
+        <li>Box mein <code>Absent</code> type karein, format se <b>"Light Red Fill with Dark Red Text"</b> select karein → OK.</li>
+      </ol>
+
+      <div class="result-preview">
+        <span class="swatch"><span class="dot" style="background:#d8efe0;border:1px solid #9ecdae;"></span> Contains "Present" → Green</span>
+        <span class="swatch"><span class="dot" style="background:#fbdcd6;border:1px solid #e6a89b;"></span> Contains "Absent" → Red</span>
+      </div>
+
+      <div class="tip"><b>Tip:</b> "Text that Contains" rule sirf specific word dhundhti hai — isliye agar aap "Leave" jaisa ek aur status add karna chahein to ek aur rule same tarike se bana sakte hain.</div>
+    </div>
+  </section>
+
+  <!-- PROJECT 3 -->
+  <section class="project">
+    <div class="project-head">
+      <span class="project-num">Project 3</span>
+      <h2>Fee Payment Tracker</h2>
+    </div>
+    <div class="project-body">
+      <p class="goal">Fee status ke basis par Pending aur Overdue payments ko highlight karna, saath mein Overdue dates ko bhi.</p>
+
+      <h3 class="sub">Step 1 — Ye data apni Excel sheet mein type karein</h3>
+      <table class="sample">
+        <tr><th>Student Name</th><th>Fee Status</th><th>Due Date</th></tr>
+        <tr><td>Rahul</td><td>Paid</td><td>02-Sep-2026</td></tr>
+        <tr><td>Priya</td><td class="hl-pending">Pending</td><td>18-Sep-2026</td></tr>
+        <tr><td>Aman</td><td class="hl-overdue">Overdue</td><td class="hl-overdue">05-Sep-2026</td></tr>
+        <tr><td>Sneha</td><td>Paid</td><td>10-Sep-2026</td></tr>
+        <tr><td>Vikas</td><td class="hl-pending">Pending</td><td>25-Sep-2026</td></tr>
+      </table>
+
+      <h3 class="sub">Step 2 — "Pending" aur "Overdue" text highlight karna</h3>
+      <ol class="steps">
+        <li>Column B (Fee Status) select karein.</li>
+        <li><span class="path">Home → Conditional Formatting → Highlight Cells Rules → Text that Contains</span></li>
+        <li>Box mein <code>Pending</code> type karein → format <b>"Yellow Fill with Dark Yellow Text"</b> → OK.</li>
+        <li>Column B dobara select karein → same steps repeat karein, box mein <code>Overdue</code> type karein → format <b>"Light Red Fill with Dark Red Text"</b> → OK.</li>
+        <li>Bold text ke liye: rule dobara open karein (<span class="path">Conditional Formatting → Manage Rules</span>) → Format button → Font tab → Bold select karein → OK.</li>
+      </ol>
+
+      <h3 class="sub">Step 3 — Due Date ko "Dates Occurring" rule se highlight karna</h3>
+      <ol class="steps">
+        <li>Column C (Due Date) select karein.</li>
+        <li><span class="path">Home → Conditional Formatting → Highlight Cells Rules → A Date Occurring...</span></li>
+        <li>Dropdown se <b>"In the Last 7 Days"</b> (ya "Yesterday") select karein — ye already-due dates ko highlight karega.</li>
+        <li>Format <b>"Light Red Fill with Dark Red Text"</b> select karein → OK.</li>
+      </ol>
+
+      <div class="result-preview">
+        <span class="swatch"><span class="dot" style="background:#faedc9;border:1px solid #e3c778;"></span> Contains "Pending" → Yellow</span>
+        <span class="swatch"><span class="dot" style="background:#fbdcd6;border:1px solid #e6a89b;"></span> Contains "Overdue" → Red + Bold</span>
+      </div>
+
+      <div class="tip"><b>Note:</b> "A Date Occurring" rule tabhi kaam karegi jab Due Date column mein values actual Excel <b>date format</b> mein ho (text ki tarah type na ki ho).</div>
+    </div>
+  </section>
+
+  <div class="intro-box">
+    <b>Practice karne ka tareeka:</b> Teeno projects khud apni Excel sheet mein banaiye, ek-ek row change karke dekhiye ki color kaise apne aap badalta hai. Agar rule kaam na kare, to <span class="path">Conditional Formatting → Manage Rules</span> mein jaakar check karein ki cell range aur condition sahi hai ya nahi.
+  </div>
+
+</main>
+
+<footer>
+  Prepared for students of <span class="brand">IT Computer Studies</span>, Deoria — MS Excel practice material.
+</footer>
+
+</body>
+</html>
